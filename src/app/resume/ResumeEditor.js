@@ -443,7 +443,7 @@ export default function ResumeEditor({ resumeId, initialData }) {
         <div className='resume-preview-card'>
           <div className='preview-heading-row'>
             <h2>Preview</h2>
-            <button type='button' onClick={handleDownloadPdf} className='btn btn-primary'>Download PDF</button>
+            <button type='button' onClick={handleDownloadPdf} className='btn-download'>Download PDF</button>
           </div>
 
           {/* PDF-like Header */}

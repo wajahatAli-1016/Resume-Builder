@@ -318,3 +318,17 @@
     border-color: #3b82f6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
+
+.btn-download{
+  background-color: rgb(59, 197, 40);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  margin-bottom: 5px;
+  border-radius: 10px;
+  cursor: pointer;
+
+}
+.btn-download:hover{
+  transform: scale(1.1);
+}
