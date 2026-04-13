@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { pdf } from '@react-pdf/renderer';
 import Navbar from '../component/Navbar';
 import ResumePDF from '../component/ResumePDF';
+import ResumeTemplateClassic from '../component/ResumeTemplateClassic';
 import './resume.css'
 
 const blankResume = {
@@ -52,6 +53,8 @@ export default function ResumeEditor({ resumeId, initialData }) {
   const [formData, setFormData] = useState(blankResume);
   const [message, setMessage] = useState('');
   const [saving, setSaving] = useState(false);
+  const [previewScale, setPreviewScale] = useState(1);
+  const previewFrameRef = useRef(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -196,23 +199,38 @@ export default function ResumeEditor({ resumeId, initialData }) {
 
   const skillList = getSkillList(formData.skills);
 
+  useEffect(() => {
+    const node = previewFrameRef.current;
+    if (!node) return;
+
+    const BASE_WIDTH = 794;
+    const updateScale = () => {
+      const width = node.clientWidth || BASE_WIDTH;
+      const nextScale = Math.min(1, width / BASE_WIDTH);
+      setPreviewScale(nextScale);
+    };
+
+    updateScale();
+
+    const observer = new ResizeObserver(updateScale);
+    observer.observe(node);
+    window.addEventListener('resize', updateScale);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', updateScale);
+    };
+  }, []);
+
   return (
-    <div className='page-container'>
+    <div className="page-container px-4 pb-10 sm:px-6">
       <Navbar/>
-      <div className='resume-editor-heading'>
-        <div className='heading'>
-          <h1>{resumeId ? 'Edit Resume' : 'Create Resume'}</h1>
-          <p>Use the left form to update your resume and watch the preview on the right.</p>
-        </div>
-        {/* <button
-          onClick={() => router.push('/resume')}
-          className='back-btn'
-        >
-          Back to Resumes
-        </button> */}
+      <div className="mx-auto max-w-3xl px-2 pb-6 pt-20 text-center sm:pt-24">
+        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">{resumeId ? 'Edit Resume' : 'Create Resume'}</h1>
+        <p className="mt-2 text-sm text-gray-600 sm:text-base">Use the form to update your resume and review the live preview alongside it on larger screens.</p>
       </div>
 
-      <div className='resume-editor-container'>
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
         <div className='card'>
           <h2 className='mb-6'>Resume Fields</h2>
 
@@ -247,17 +265,17 @@ export default function ResumeEditor({ resumeId, initialData }) {
                 className='form-input'
               />
             </div>
-            <label style={{ display: 'block', marginBottom: '10px' }}>
-              Phone
+            <label className="mb-3 block">
+              <span className="mb-2 block font-medium text-gray-800">Phone</span>
               <input
-                type="text"
+                type="number"
                 value={formData.personalInfo.phone}
                 onChange={(e) => setPersonalInfo('phone', e.target.value)}
                 className='inp'
               />
             </label>
-            <label style={{ display: 'block', marginBottom: '10px' }}>
-              Address
+            <label className="mb-3 block">
+              <span className="mb-2 block font-medium text-gray-800">Address</span>
               <input
                 type="text"
                 value={formData.personalInfo.address}
@@ -267,12 +285,12 @@ export default function ResumeEditor({ resumeId, initialData }) {
             </label>
           </section>
 
-          <section style={{ marginTop: '20px' }}>
-            <h3>Education</h3>
+          <section className="mt-6">
+            <h3 className="mb-4 text-lg font-semibold text-gray-900">Education</h3>
             {formData.education.map((item, index) => (
-              <div key={index} style={{ marginBottom: '16px', border: '1px solid #eee', padding: '12px', borderRadius: '8px' }}>
-                <label style={{ display: 'block', marginBottom: '10px' }}>
-                  School
+              <div key={index} className="mb-4 rounded-xl border border-gray-200 bg-gray-50/60 p-4">
+                <label className="mb-3 block">
+                  <span className="mb-2 block font-medium text-gray-800">School</span>
                   <input
                     type="text"
                     value={item.school}
@@ -280,8 +298,8 @@ export default function ResumeEditor({ resumeId, initialData }) {
                     className='inp'
                   />
                 </label>
-                <label style={{ display: 'block', marginBottom: '10px' }}>
-                  Degree
+                <label className="mb-3 block">
+                  <span className="mb-2 block font-medium text-gray-800">Degree</span>
                   <input
                     type="text"
                     value={item.degree}
@@ -289,9 +307,9 @@ export default function ResumeEditor({ resumeId, initialData }) {
                     className='inp'
                   />
                 </label>
-                <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
-                  <label style={{ flex: 1 }}>
-                    Start date
+                <div className="mb-3 flex flex-col gap-3 sm:flex-row">
+                  <label className="flex-1">
+                    <span className="mb-2 block font-medium text-gray-800">Start date</span>
                     <input
                       type="date"
                       value={item.startDate}
@@ -300,8 +318,8 @@ export default function ResumeEditor({ resumeId, initialData }) {
                       className='inp'
                     />
                   </label>
-                  <label style={{ flex: 1 }}>
-                    End date
+                  <label className="flex-1">
+                    <span className="mb-2 block font-medium text-gray-800">End date</span>
                     <input
                       type="date"
                       value={item.endDate}
@@ -311,8 +329,8 @@ export default function ResumeEditor({ resumeId, initialData }) {
                     />
                   </label>
                 </div>
-                <label style={{ display: 'block', marginBottom: '10px' }}>
-                  Description
+                <label className="mb-3 block">
+                  <span className="mb-2 block font-medium text-gray-800">Description</span>
                   <textarea
                     value={item.description}
                     onChange={(e) => setEducationItem(index, 'description', e.target.value)}
@@ -324,7 +342,7 @@ export default function ResumeEditor({ resumeId, initialData }) {
                   <button
                     type="button"
                     onClick={() => removeEducation(index)}
-                    style={{ padding: '8px 12px', backgroundColor: '#ff4d4f', border: 'none', color: 'white', borderRadius: '6px', cursor: 'pointer' }}
+                    className="rounded-lg bg-red-500 px-3 py-2 text-sm font-medium text-white transition hover:bg-red-600"
                   >
                     Remove education
                   </button>
@@ -334,18 +352,18 @@ export default function ResumeEditor({ resumeId, initialData }) {
             <button
               type="button"
               onClick={addEducation}
-              style={{ padding: '10px 14px', backgroundColor: '#0070f3', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
+              className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
             >
               Add education
             </button>
           </section>
 
-          <section style={{ marginTop: '20px' }}>
-            <h3>Experience</h3>
+          <section className="mt-6">
+            <h3 className="mb-4 text-lg font-semibold text-gray-900">Experience</h3>
             {formData.experience.map((item, index) => (
-              <div key={index} style={{ marginBottom: '16px', border: '1px solid #eee', padding: '12px', borderRadius: '8px' }}>
-                <label style={{ display: 'block', marginBottom: '10px' }}>
-                  Company
+              <div key={index} className="mb-4 rounded-xl border border-gray-200 bg-gray-50/60 p-4">
+                <label className="mb-3 block">
+                  <span className="mb-2 block font-medium text-gray-800">Company</span>
                   <input
                     type="text"
                     value={item.company}
@@ -353,8 +371,8 @@ export default function ResumeEditor({ resumeId, initialData }) {
                     className='inp'
                   />
                 </label>
-                <label style={{ display: 'block', marginBottom: '10px' }}>
-                  Role
+                <label className="mb-3 block">
+                  <span className="mb-2 block font-medium text-gray-800">Role</span>
                   <input
                     type="text"
                     value={item.role}
@@ -362,9 +380,9 @@ export default function ResumeEditor({ resumeId, initialData }) {
                     className='inp'
                   />
                 </label>
-                <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
-                  <label style={{ flex: 1 }}>
-                    Start date
+                <div className="mb-3 flex flex-col gap-3 sm:flex-row">
+                  <label className="flex-1">
+                    <span className="mb-2 block font-medium text-gray-800">Start date</span>
                     <input
                       type="date"
                       value={item.startDate}
@@ -373,8 +391,8 @@ export default function ResumeEditor({ resumeId, initialData }) {
                       className='inp'
                     />
                   </label>
-                  <label style={{ flex: 1 }}>
-                    End date
+                  <label className="flex-1">
+                    <span className="mb-2 block font-medium text-gray-800">End date</span>
                     <input
                       type="date"
                       value={item.endDate}
@@ -384,8 +402,8 @@ export default function ResumeEditor({ resumeId, initialData }) {
                     />
                   </label>
                 </div>
-                <label style={{ display: 'block', marginBottom: '10px' }}>
-                  Description
+                <label className="mb-3 block">
+                  <span className="mb-2 block font-medium text-gray-800">Description</span>
                   <textarea
                     value={item.description}
                     onChange={(e) => setExperienceItem(index, 'description', e.target.value)}
@@ -397,7 +415,7 @@ export default function ResumeEditor({ resumeId, initialData }) {
                   <button
                     type="button"
                     onClick={() => removeExperience(index)}
-                    style={{ padding: '8px 12px', backgroundColor: '#ff4d4f', border: 'none', color: 'white', borderRadius: '6px', cursor: 'pointer' }}
+                    className="rounded-lg bg-red-500 px-3 py-2 text-sm font-medium text-white transition hover:bg-red-600"
                   >
                     Remove experience
                   </button>
@@ -407,16 +425,16 @@ export default function ResumeEditor({ resumeId, initialData }) {
             <button
               type="button"
               onClick={addExperience}
-              style={{ padding: '10px 14px', backgroundColor: '#0070f3', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
+              className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
             >
               Add experience
             </button>
           </section>
 
-          <section style={{ marginTop: '20px' }}>
-            <h3>Skills</h3>
-            <label style={{ display: 'block', marginBottom: '10px' }}>
-              List skills separated by commas
+          <section className="mt-6">
+            <h3 className="mb-4 text-lg font-semibold text-gray-900">Skills</h3>
+            <label className="block">
+              <span className="mb-2 block font-medium text-gray-800">List skills separated by commas</span>
               <input
                 type="text"
                 value={formData.skills}
@@ -427,113 +445,37 @@ export default function ResumeEditor({ resumeId, initialData }) {
             </label>
           </section>
 
-          <div style={{ marginTop: '24px', display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
             <button
               type="button"
               onClick={handleSave}
               disabled={saving}
-              style={{ padding: '12px 18px', backgroundColor: '#0070f3', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}
+              className="rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {saving ? 'Saving...' : 'Save Resume'}
             </button>
-            {message && <span style={{ color: '#333' }}>{message}</span>}
+            {message && <span className="text-sm text-gray-700">{message}</span>}
           </div>
         </div>
 
-        <div className='resume-preview-card'>
-          <div className='preview-heading-row'>
-            <h2>Preview</h2>
-            <button type='button' onClick={handleDownloadPdf} className='btn-download'>Download PDF</button>
+        <div className='resume-preview-card p-5 sm:p-8 lg:p-10'>
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <h2 className="text-xl font-semibold text-gray-900">Preview</h2>
+            <button type='button' onClick={handleDownloadPdf} className='btn-download w-full sm:w-auto'>Download PDF</button>
           </div>
 
-          {/* PDF-like Header */}
-          <div className='preview-header'>
-            <h1 className='preview-name'>{formData.personalInfo.fullName || 'Full Name'}</h1>
-            <p className='preview-contact'>
-              {formData.personalInfo.email || 'email@example.com'} • {formData.personalInfo.phone || '(555) 555-5555'}
-            </p>
-            <p className='preview-contact'>
-              {formData.personalInfo.address || 'Your address here'}
-            </p>
-          </div>
-
-          {/* Two Column Layout */}
-          <div className='preview-two-column'>
-            {/* Left Column: Personal Information and Skills */}
-            <div className='preview-left-column'>
-              {/* Personal Information Section */}
-              <div className='preview-section'>
-                <h3 className='preview-section-title'>Personal Information</h3>
-                <div className='preview-personal-info-item'>
-                  <strong>Name: </strong>
-                  {formData.personalInfo.fullName || 'Not provided'}
-                </div>
-                <div className='preview-personal-info-item'>
-                  <strong>Email: </strong>
-                  {formData.personalInfo.email || 'Not provided'}
-                </div>
-                <div className='preview-personal-info-item'>
-                  <strong>Phone: </strong>
-                  {formData.personalInfo.phone || 'Not provided'}
-                </div>
-                <div className='preview-personal-info-item'>
-                  <strong>Address: </strong>
-                  {formData.personalInfo.address || 'Not provided'}
-                </div>
+          <div ref={previewFrameRef} className="w-full overflow-hidden">
+            <div style={{ height: `${1123 * previewScale}px` }}>
+              <div
+                style={{
+                  width: '794px',
+                  height: '1123px',
+                  transform: `scale(${previewScale})`,
+                  transformOrigin: 'top left',
+                }}
+              >
+                <ResumeTemplateClassic data={formData} />
               </div>
-
-              {/* Skills Section */}
-              {skillList.length > 0 && (
-                <div className='preview-section'>
-                  <h3 className='preview-section-title'>Skills</h3>
-                  <p className='preview-skills-text'>{skillList.join(', ')}</p>
-                </div>
-              )}
-            </div>
-
-            {/* Right Column: Education and Experience */}
-            <div className='preview-right-column'>
-              {/* Education Section */}
-              {formData.education && formData.education.length > 0 && (
-                <div className='preview-section'>
-                  <h3 className='preview-section-title'>Education</h3>
-                  {formData.education.map((item, index) => (
-                    <div key={index} className='preview-item'>
-                      <div className='preview-item-title'>{item.degree || 'Degree'}</div>
-                      <div className='preview-item-subtitle'>{item.school || 'School'}</div>
-                      {(item.startDate || item.endDate) && (
-                        <div className='preview-date-range'>
-                          {item.startDate || 'Start'} - {item.endDate || 'End'}
-                        </div>
-                      )}
-                      {item.description && (
-                        <p className='preview-description'>{item.description}</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Experience Section */}
-              {formData.experience && formData.experience.length > 0 && (
-                <div className='preview-section'>
-                  <h3 className='preview-section-title'>Work Experience</h3>
-                  {formData.experience.map((item, index) => (
-                    <div key={index} className='preview-item'>
-                      <div className='preview-item-title'>{item.role || 'Role'}</div>
-                      <div className='preview-item-subtitle'>{item.company || 'Company'}</div>
-                      {(item.startDate || item.endDate) && (
-                        <div className='preview-date-range'>
-                          {item.startDate || 'Start'} - {item.endDate || 'Present'}
-                        </div>
-                      )}
-                      {item.description && (
-                        <p className='preview-description'>{item.description}</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
           </div>
         </div>

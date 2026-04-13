@@ -10,180 +10,240 @@ Font.register({
 
 const styles = StyleSheet.create({
   page: {
-    padding: 40,
+    paddingTop: 0,
+    paddingBottom: 0,
+    paddingHorizontal: 0,
     backgroundColor: '#ffffff',
-    fontFamily: 'Helvetica'
+    fontFamily: 'Helvetica',
+  },
+  topBar: {
+    height: 10,
+    backgroundColor: '#0f172a',
+  },
+  bottomBar: {
+    height: 10,
+    backgroundColor: '#0f172a',
   },
   header: {
-    marginBottom: 30,
-    padding: 24,
-    backgroundColor: '#1e293b'
+    paddingTop: 26,
+    paddingBottom: 16,
+    paddingHorizontal: 42,
+    alignItems: 'center',
+    textAlign: 'center',
   },
   name: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#ffffff'
+    fontSize: 28,
+    fontWeight: 700,
+    letterSpacing: 4,
+    color: '#0f172a',
   },
-  contactInfo: {
-    fontSize: 11,
-    color: '#e2e8f0',
-    marginBottom: 4
+  title: {
+    marginTop: 10,
+    fontSize: 10,
+    letterSpacing: 2.5,
+    color: '#475569',
+    textTransform: 'uppercase',
+  },
+  body: {
+    flexDirection: 'row',
+    paddingHorizontal: 42,
+    paddingBottom: 20,
+    gap: 22,
+    flex: 1,
+  },
+  left: {
+    width: 220,
+    paddingRight: 10,
+  },
+  right: {
+    flex: 1,
+    paddingLeft: 10,
   },
   section: {
-    marginBottom: 20,
-    backgroundColor: 'transparent',
-    padding: 0
+    marginTop: 12,
   },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 12,
-    color: '#1e293b'
+  sectionHeading: {
+    fontSize: 9,
+    letterSpacing: 2.8,
+    color: '#334155',
+    textTransform: 'uppercase',
+    marginBottom: 8,
   },
-  itemTitle: {
-    fontSize: 13,
-    fontWeight: 'bold',
-    marginBottom: 4,
-    color: '#000000'
+  contactLabel: {
+    fontSize: 8,
+    letterSpacing: 1.8,
+    textTransform: 'uppercase',
+    color: '#64748b',
+    marginBottom: 2,
   },
-  itemSubtitle: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    marginBottom: 4,
-    color: '#333333'
-  },
-  dateRange: {
+  contactValue: {
     fontSize: 10,
-    color: '#666666',
-    marginBottom: 6
+    color: '#0f172a',
+    marginBottom: 8,
   },
-  description: {
+  eduDegree: {
     fontSize: 10,
-    color: '#444444',
-    marginBottom: 12,
-    lineHeight: 1.5
+    fontWeight: 700,
+    color: '#0f172a',
   },
-  twoColumnContainer: {
-    flexDirection: 'row'
-  },
-  leftColumn: {
-    flex: 0.45,
-  },
-  rightColumn: {
-    flex: 0.55,
-    borderLeftWidth: 2,
-    borderLeftColor: '#e2e8f0',
-    paddingLeft: 20
-  },
-  personalInfoItem: {
+  eduSchool: {
+    marginTop: 2,
     fontSize: 10,
-    color: '#333333',
-    marginBottom: 6,
-    lineHeight: 1.4
-  }
+    color: '#334155',
+  },
+  eduDates: {
+    marginTop: 2,
+    fontSize: 9,
+    color: '#64748b',
+  },
+  paragraph: {
+    fontSize: 10,
+    color: '#334155',
+    lineHeight: 1.5,
+  },
+  bullets: {
+    marginTop: 6,
+    paddingLeft: 10,
+    gap: 4,
+  },
+  bullet: {
+    fontSize: 10,
+    color: '#334155',
+    lineHeight: 1.35,
+  },
+  expRole: {
+    fontSize: 10,
+    fontWeight: 800,
+    letterSpacing: 1.2,
+    textTransform: 'uppercase',
+    color: '#0f172a',
+  },
+  expMeta: {
+    marginTop: 3,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  expMetaText: {
+    fontSize: 9,
+    color: '#64748b',
+  },
+  skillsList: {
+    paddingLeft: 10,
+    gap: 4,
+  },
+  skill: {
+    fontSize: 10,
+    color: '#334155',
+    lineHeight: 1.25,
+  },
 });
 
+function normalizeSkills(skills) {
+  if (!skills) return [];
+  if (Array.isArray(skills)) return skills.map((s) => String(s).trim()).filter(Boolean);
+  if (typeof skills === 'string') return skills.split(',').map((s) => s.trim()).filter(Boolean);
+  return [];
+}
+
+function fmtDateRange(start, end) {
+  const s = start ? String(start) : '';
+  const e = end ? String(end) : '';
+  if (!s && !e) return '';
+  if (s && e) return `${s} - ${e}`;
+  return s || e;
+}
+
 const ResumePDF = ({ formData }) => {
-  const skillList = formData.skills
-    ? formData.skills.split(',').map(s => s.trim()).filter(Boolean)
-    : [];
+  const personal = formData?.personalInfo || {};
+  const education = Array.isArray(formData?.education) ? formData.education : [];
+  const experience = Array.isArray(formData?.experience) ? formData.experience : [];
+  const skillList = normalizeSkills(formData?.skills);
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        {/* Header */}
+        <View style={styles.topBar} />
+
         <View style={styles.header}>
-          <Text style={styles.name}>
-            {formData.personalInfo?.fullName || 'Full Name'}
-          </Text>
-          <Text style={styles.contactInfo}>
-            {formData.personalInfo?.email || 'email@example.com'} • {formData.personalInfo?.phone || '(555) 555-5555'}
-          </Text>
-          <Text style={styles.contactInfo}>
-            {formData.personalInfo?.address || 'Your address here'}
-          </Text>
+          <Text style={styles.name}>{personal.fullName || 'YOUR NAME'}</Text>
+          <Text style={styles.title}>{formData?.title || 'YOUR PROFESSIONAL TITLE'}</Text>
         </View>
 
-        {/* Two Column Layout */}
-        <View style={styles.twoColumnContainer}>
-          {/* Left Column: Personal Information and Skills */}
-          <View style={styles.leftColumn}>
-            {/* Personal Information Section */}
+        <View style={styles.body}>
+          <View style={styles.left}>
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Personal Information</Text>
-              <Text style={styles.personalInfoItem}>
-                <Text style={{ fontWeight: 'bold' }}>Name: </Text>
-                {formData.personalInfo?.fullName || 'Not provided'}
-              </Text>
-              <Text style={styles.personalInfoItem}>
-                <Text style={{ fontWeight: 'bold' }}>Email: </Text>
-                {formData.personalInfo?.email || 'Not provided'}
-              </Text>
-              <Text style={styles.personalInfoItem}>
-                <Text style={{ fontWeight: 'bold' }}>Phone: </Text>
-                {formData.personalInfo?.phone || 'Not provided'}
-              </Text>
-              <Text style={styles.personalInfoItem}>
-                <Text style={{ fontWeight: 'bold' }}>Address: </Text>
-                {formData.personalInfo?.address || 'Not provided'}
+              <Text style={styles.sectionHeading}>CONTACT</Text>
+              <Text style={styles.contactLabel}>Phone</Text>
+              <Text style={styles.contactValue}>{personal.phone || '123-456-7890'}</Text>
+              <Text style={styles.contactLabel}>Email</Text>
+              <Text style={styles.contactValue}>{personal.email || 'youremail@gmail.com'}</Text>
+              <Text style={styles.contactLabel}>Address</Text>
+              <Text style={styles.contactValue}>{personal.address || 'City, State'}</Text>
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.sectionHeading}>EDUCATION</Text>
+              {(education.length ? education.slice(0, 3) : [{ degree: '', school: '', startDate: '', endDate: '' }]).map(
+                (e, idx) => (
+                  <View key={idx} style={{ marginBottom: 10 }}>
+                    <Text style={styles.eduDegree}>{e.degree || 'YOUR DEGREE / MAJOR'}</Text>
+                    <Text style={styles.eduSchool}>{e.school || 'University Name'}</Text>
+                    <Text style={styles.eduDates}>{fmtDateRange(e.startDate, e.endDate) || '2012–2014'}</Text>
+                  </View>
+                )
+              )}
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.sectionHeading}>SKILLS</Text>
+              <View style={styles.skillsList}>
+                {(skillList.length ? skillList.slice(0, 14) : ['Relevant Skill', 'Relevant Skill', 'Relevant Skill']).map(
+                  (s, idx) => (
+                    <Text key={idx} style={styles.skill}>
+                      • {s}
+                    </Text>
+                  )
+                )}
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.right}>
+            <View style={styles.section}>
+              <Text style={styles.sectionHeading}>PROFILE</Text>
+              <Text style={styles.paragraph}>
+                {formData?.summary ||
+                  'Write a powerful performance summary here. Highlight your most valuable skills, qualifications, achievements, credentials, and the distinguishing information as it relates to and supports your career objective.'}
               </Text>
             </View>
 
-            {/* Skills Section */}
-            {skillList.length > 0 && (
-              <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Skills</Text>
-                <Text style={styles.description}>{skillList.join(', ')}</Text>
-              </View>
-            )}
-          </View>
-
-          {/* Right Column: Education and Experience */}
-          <View style={styles.rightColumn}>
-            {/* Education Section */}
-            {formData.education && formData.education.length > 0 && (
-              <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Education</Text>
-                {formData.education.map((item, index) => (
-                  <View key={index} style={{ marginBottom: 10 }}>
-                    <Text style={styles.itemTitle}>{item.degree || 'Degree'}</Text>
-                    <Text style={styles.itemSubtitle}>{item.school || 'School'}</Text>
-                    {(item.startDate || item.endDate) && (
-                      <Text style={styles.dateRange}>
-                        {item.startDate || 'Start'} - {item.endDate || 'End'}
-                      </Text>
-                    )}
-                    {item.description && (
-                      <Text style={styles.description}>{item.description}</Text>
-                    )}
+            <View style={styles.section}>
+              <Text style={styles.sectionHeading}>PROFESSIONAL EXPERIENCE</Text>
+              {(experience.length ? experience.slice(0, 4) : [{}]).map((x, idx) => (
+                <View key={idx} style={{ marginBottom: 12 }}>
+                  <Text style={styles.expRole}>{x.role || 'WRITE YOUR JOB TITLE HERE'}</Text>
+                  <View style={styles.expMeta}>
+                    <Text style={styles.expMetaText}>{x.company || 'Company Name'}</Text>
+                    <Text style={styles.expMetaText}>|</Text>
+                    <Text style={styles.expMetaText}>{fmtDateRange(x.startDate, x.endDate) || 'Beginning Date–End Date'}</Text>
                   </View>
-                ))}
-              </View>
-            )}
-
-            {/* Experience Section */}
-            {formData.experience && formData.experience.length > 0 && (
-              <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Work Experience</Text>
-                {formData.experience.map((item, index) => (
-                  <View key={index} style={{ marginBottom: 10 }}>
-                    <Text style={styles.itemTitle}>{item.role || 'Role'}</Text>
-                    <Text style={styles.itemSubtitle}>{item.company || 'Company'}</Text>
-                    {(item.startDate || item.endDate) && (
-                      <Text style={styles.dateRange}>
-                        {item.startDate || 'Start'} - {item.endDate || 'Present'}
-                      </Text>
-                    )}
-                    {item.description && (
-                      <Text style={styles.description}>{item.description}</Text>
-                    )}
-                  </View>
-                ))}
-              </View>
-            )}
+                  {x.description ? (
+                    <Text style={[styles.paragraph, { marginTop: 6 }]}>{String(x.description)}</Text>
+                  ) : (
+                    <View style={styles.bullets}>
+                      <Text style={styles.bullet}>• Beginning with a powerful action verb, write up to six responsibilities and/or accomplishments.</Text>
+                      <Text style={styles.bullet}>• Highlight your most relevant qualifications for the job by listing them first.</Text>
+                      <Text style={styles.bullet}>• Keep descriptions short but add details that show why you're a great candidate.</Text>
+                    </View>
+                  )}
+                </View>
+              ))}
+            </View>
           </View>
         </View>
+
+        <View style={styles.bottomBar} />
       </Page>
     </Document>
   );

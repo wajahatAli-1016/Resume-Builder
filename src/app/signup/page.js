@@ -16,6 +16,13 @@ export default function Signup() {
     setError('');
     setSuccess('');
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
     try {
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
@@ -39,10 +46,10 @@ export default function Signup() {
   };
 
   return (
-    <div className='auth-container'>
-      <div className='auth-card'>
-        <h1 className='auth-heading'>Resume Builder</h1>
-        <h2 className='auth-heading'>Sign Up</h2>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-white to-indigo-100 px-4 py-10 sm:px-6">
+      <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 shadow-lg sm:p-8">
+        <h1 className="mb-2 text-center text-2xl font-bold text-gray-900 sm:text-3xl">Resume Builder</h1>
+        <h2 className="mb-6 text-center text-xl font-semibold text-gray-800 sm:text-2xl">Sign Up</h2>
         <form onSubmit={handleSubmit} className='space-y-4'>
           <div className='form-group'>
             <label className='form-label'>Name:</label>
@@ -74,14 +81,15 @@ export default function Signup() {
               className='form-input'
             />
           </div>
-          {error && <p className='text-center text-red-600 mt-4'>{error}</p>}
-          {success && <p className='text-center text-green-600 mt-4'>{success}</p>}
-          <button type="submit" className='btn btn-primary w-full'>
+          {error && <p className="mt-4 text-center text-sm text-red-600">{error}</p>}
+          {success && <p className="mt-4 text-center text-sm text-green-600">{success}</p>}
+          <button type="submit" className="w-full rounded-lg bg-indigo-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-indigo-700">
             Sign Up
           </button>
         </form>
-        <p className='auth-link'>
-          Already have an account? <a href="/login">Log in</a>
+        <p className="mt-6 text-center text-sm text-gray-600 sm:text-base">
+          Already have an account?{" "}
+          <a href="/login" className="font-medium text-indigo-600 hover:underline">Log in</a>
         </p>
       </div>
     </div>

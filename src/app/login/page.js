@@ -36,10 +36,10 @@ export default function Login() {
   };
 
   return (
-    <div className='auth-container'>
-      <div className='auth-card'>
-        <h1 className='auth-heading'>Resume Builder</h1>
-        <h2 className='auth-heading'>Login</h2>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-white to-indigo-100 px-4 py-10 sm:px-6">
+      <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 shadow-lg sm:p-8">
+        <h1 className="mb-2 text-center text-2xl font-bold text-gray-900 sm:text-3xl">Resume Builder</h1>
+        <h2 className="mb-6 text-center text-xl font-semibold text-gray-800 sm:text-2xl">Login</h2>
         <form onSubmit={handleSubmit} className='space-y-4'>
           <div className='form-group'>
             <label className='form-label'>Email:</label>
@@ -61,13 +61,14 @@ export default function Login() {
               className='form-input'
             />
           </div>
-          {error && <p className='text-center text-red-600 mt-4'>{error}</p>}
-          <button type="submit" className='btn btn-primary w-full'>
+          {error && <p className="mt-4 text-center text-sm text-red-600">{error}</p>}
+          <button type="submit" className="w-full rounded-lg bg-indigo-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-indigo-700">
             Login
           </button>
         </form>
-        <p className='auth-link'>
-          Dont have an account? <a href="/signup">Sign up</a>
+        <p className="mt-6 text-center text-sm text-gray-600 sm:text-base">
+          Dont have an account?{" "}
+          <a href="/signup" className="font-medium text-indigo-600 hover:underline">Sign up</a>
         </p>
       </div>
     </div>
