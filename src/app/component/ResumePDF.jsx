@@ -1,8 +1,10 @@
 import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
+import { COLORS } from '@/app/styles/design-tokens';
+import { FONT_FAMILY, FONT_SIZE, FONT_WEIGHT } from '@/app/styles/typography';
 
 // Register fonts (optional - for better appearance)
 Font.register({
-  family: 'Helvetica',
+  family: FONT_FAMILY.sans,
   fonts: [
     { src: 'https://fonts.gstatic.com/s/opensans/v36/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-mu0SC55I.woff2' }
   ]
@@ -13,16 +15,16 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     paddingBottom: 0,
     paddingHorizontal: 0,
-    backgroundColor: '#ffffff',
-    fontFamily: 'Helvetica',
+    backgroundColor: COLORS.white,
+    fontFamily: FONT_FAMILY.sans,
   },
   topBar: {
     height: 10,
-    backgroundColor: '#0f172a',
+    backgroundColor: COLORS.slate900,
   },
   bottomBar: {
     height: 10,
-    backgroundColor: '#0f172a',
+    backgroundColor: COLORS.slate900,
   },
   header: {
     paddingTop: 26,
@@ -32,22 +34,23 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   name: {
-    fontSize: 28,
-    fontWeight: 700,
+    fontSize: FONT_SIZE.xl,
+    fontWeight: FONT_WEIGHT.bold,
     letterSpacing: 4,
-    color: '#0f172a',
+    color: COLORS.slate900,
   },
   title: {
     marginTop: 10,
-    fontSize: 10,
+    fontSize: FONT_SIZE.md,
     letterSpacing: 2.5,
-    color: '#475569',
+    color: COLORS.slate600Alt,
     textTransform: 'uppercase',
   },
   body: {
     flexDirection: 'row',
     paddingHorizontal: 42,
     paddingBottom: 20,
+    paddingTop: 40,
     gap: 22,
     flex: 1,
   },
@@ -63,43 +66,50 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   sectionHeading: {
-    fontSize: 9,
+    fontSize: FONT_SIZE.sm,
     letterSpacing: 2.8,
-    color: '#334155',
+    color: COLORS.slate700,
     textTransform: 'uppercase',
     marginBottom: 8,
   },
   contactLabel: {
-    fontSize: 8,
+    fontSize: FONT_SIZE.xs,
     letterSpacing: 1.8,
     textTransform: 'uppercase',
-    color: '#64748b',
+    color: COLORS.slate500Alt,
     marginBottom: 2,
   },
   contactValue: {
-    fontSize: 10,
-    color: '#0f172a',
+    fontSize: FONT_SIZE.md,
+    color: COLORS.slate900,
     marginBottom: 8,
   },
   eduDegree: {
-    fontSize: 10,
-    fontWeight: 700,
-    color: '#0f172a',
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.bold,
+    color: COLORS.slate900,
   },
   eduSchool: {
     marginTop: 2,
-    fontSize: 10,
-    color: '#334155',
+    fontSize: FONT_SIZE.md,
+    color: COLORS.slate700,
   },
   eduDates: {
     marginTop: 2,
-    fontSize: 9,
-    color: '#64748b',
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.slate500Alt,
   },
   paragraph: {
-    fontSize: 10,
-    color: '#334155',
+    fontSize: FONT_SIZE.md,
+    color: COLORS.slate700,
     lineHeight: 1.5,
+  },
+  eduDescription: {
+    marginTop: 6,
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.normal,
+    color: COLORS.slate700,
+    lineHeight: 1.4,
   },
   bullets: {
     marginTop: 6,
@@ -107,16 +117,16 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   bullet: {
-    fontSize: 10,
-    color: '#334155',
+    fontSize: FONT_SIZE.md,
+    color: COLORS.slate700,
     lineHeight: 1.35,
   },
   expRole: {
-    fontSize: 10,
-    fontWeight: 800,
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.extraBold,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
-    color: '#0f172a',
+    color: COLORS.slate900,
   },
   expMeta: {
     marginTop: 3,
@@ -125,17 +135,25 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   expMetaText: {
-    fontSize: 9,
-    color: '#64748b',
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.slate500Alt,
   },
   skillsList: {
-    paddingLeft: 10,
-    gap: 4,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   skill: {
-    fontSize: 10,
-    color: '#334155',
-    lineHeight: 1.25,
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+    borderWidth: 1,
+    borderColor: '#cbd5e1',
+    borderRadius: 999,
+    backgroundColor: '#f8fafc',
+    fontSize: FONT_SIZE.xs,
+    lineHeight: 1.2,
+    color: COLORS.slate700,
+    marginRight: 6,
+    marginBottom: 6,
   },
 });
 
@@ -182,26 +200,14 @@ const ResumePDF = ({ formData }) => {
               <Text style={styles.contactValue}>{personal.address || 'City, State'}</Text>
             </View>
 
-            <View style={styles.section}>
-              <Text style={styles.sectionHeading}>EDUCATION</Text>
-              {(education.length ? education.slice(0, 3) : [{ degree: '', school: '', startDate: '', endDate: '' }]).map(
-                (e, idx) => (
-                  <View key={idx} style={{ marginBottom: 10 }}>
-                    <Text style={styles.eduDegree}>{e.degree || 'YOUR DEGREE / MAJOR'}</Text>
-                    <Text style={styles.eduSchool}>{e.school || 'University Name'}</Text>
-                    <Text style={styles.eduDates}>{fmtDateRange(e.startDate, e.endDate) || '2012–2014'}</Text>
-                  </View>
-                )
-              )}
-            </View>
-
+           
             <View style={styles.section}>
               <Text style={styles.sectionHeading}>SKILLS</Text>
               <View style={styles.skillsList}>
                 {(skillList.length ? skillList.slice(0, 14) : ['Relevant Skill', 'Relevant Skill', 'Relevant Skill']).map(
                   (s, idx) => (
                     <Text key={idx} style={styles.skill}>
-                      • {s}
+                      {s}
                     </Text>
                   )
                 )}
@@ -210,12 +216,26 @@ const ResumePDF = ({ formData }) => {
           </View>
 
           <View style={styles.right}>
-            <View style={styles.section}>
-              <Text style={styles.sectionHeading}>PROFILE</Text>
-              <Text style={styles.paragraph}>
-                {formData?.summary ||
-                  'Write a powerful performance summary here. Highlight your most valuable skills, qualifications, achievements, credentials, and the distinguishing information as it relates to and supports your career objective.'}
-              </Text>
+          <View style={styles.section}>
+              <Text style={styles.sectionHeading}>EDUCATION</Text>
+              {(education.length ? education.slice(0, 3) : [{ degree: '', school: '', startDate: '', endDate: '' }]).map(
+                (e, idx) => (
+                  <View key={idx} style={{ marginBottom: 10 }}>
+                    <Text style={styles.eduDegree}>{e.degree || 'YOUR DEGREE / MAJOR'}</Text>
+                    <Text style={styles.eduSchool}>{e.school || 'University Name'}</Text>
+                    <Text style={styles.eduDates}>{fmtDateRange(e.startDate, e.endDate) || '2012–2014'}</Text>
+                    {e.description ? (
+                    <Text style={styles.eduDescription}>{String(e.description)}</Text>
+                  ) : (
+                    <View style={styles.bullets}>
+                      <Text style={styles.bullet}>• Beginning with a powerful action verb, write up to six responsibilities and/or accomplishments.</Text>
+                      <Text style={styles.bullet}>• Highlight your most relevant qualifications for the job by listing them first.</Text>
+                      <Text style={styles.bullet}>• Keep descriptions short but add details that show why you're a great candidate.</Text>
+                    </View>
+                  )}
+                  </View>
+                )
+              )}
             </View>
 
             <View style={styles.section}>

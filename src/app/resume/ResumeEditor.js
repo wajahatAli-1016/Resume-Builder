@@ -52,10 +52,31 @@ function getSkillList(skillsInput) {
 export default function ResumeEditor({ resumeId, initialData }) {
   const [formData, setFormData] = useState(blankResume);
   const [message, setMessage] = useState('');
+  const [isFullNameDisabled, setIsFullNameDisabled] = useState(false);
+  const [fullNameError, setFullNameError] = useState('');
   const [saving, setSaving] = useState(false);
   const [previewScale, setPreviewScale] = useState(1);
   const previewFrameRef = useRef(null);
   const router = useRouter();
+
+  const MAX_CHARS = 20;
+  const handleFullNameChange = (e) => {
+    const value = e.target.value;
+    
+    if (value.length <= MAX_CHARS) {
+      setFormData((prev) => ({
+        ...prev,
+        personalInfo: {
+          ...prev.personalInfo,
+          fullName: value,
+        },
+      }));
+      setFullNameError('max size 20 characters');
+      if (value.length === MAX_CHARS) {
+        setIsFullNameDisabled(true);
+      }
+    }
+  };
 
   useEffect(() => {
     if (initialData) {
@@ -254,7 +275,10 @@ export default function ResumeEditor({ resumeId, initialData }) {
                 value={formData.personalInfo.fullName}
                 onChange={(e) => setPersonalInfo('fullName', e.target.value)}
                 className='form-input'
+                disabled={isFullNameDisabled}
+                maxLength={MAX_CHARS}
               />
+              {fullNameError && <p className='text-red-500 text-sm'>{fullNameError}</p>}
             </div>
             <div className='form-group'>
               <label className='form-label'>Email</label>

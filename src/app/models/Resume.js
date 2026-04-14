@@ -4,10 +4,10 @@ const ResumeSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   title: { type: String, required: true },
   personalInfo: {
-    fullName: String,
-    email: String,
-    phone: String,
-    address: String,
+    fullName: {type:String, required: true},
+    email: {type:String, required: true},
+    phone: {type:String, required: true},
+    address: {type:String, required: true},
   },
   education: [
     {

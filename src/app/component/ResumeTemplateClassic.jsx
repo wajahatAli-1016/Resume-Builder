@@ -54,7 +54,20 @@ export default function ResumeTemplateClassic({ data, compact = false }) {
             </div>
           </section>
 
+         
+
           <section className="classic-section">
+            <h3 className="classic-section-heading">SKILLS</h3>
+            <div className="classic-skills-tags">
+              {(skillItems.length ? skillItems : ["Relevant Skill", "Relevant Skill", "Relevant Skill"]).map((s, idx) => (
+                <span key={idx} className="classic-skill-tag">{s}</span>
+              ))}
+            </div>
+          </section>
+        </aside>
+
+        <main className="classic-right">
+        <section className="classic-section">
             <h3 className="classic-section-heading">EDUCATION</h3>
             <div className="classic-edu">
               {eduItems.length ? (
@@ -63,6 +76,13 @@ export default function ResumeTemplateClassic({ data, compact = false }) {
                     <div className="classic-edu-degree">{e.degree || "YOUR DEGREE / MAJOR"}</div>
                     <div className="classic-edu-school">{e.school || "University Name"}</div>
                     <div className="classic-edu-dates">{fmtDateRange(e.startDate, e.endDate) || "2012–2014"}</div>
+                    {e.description ? (
+                      <p className="classic-paragraph">{String(e.description)}</p>
+                    ) : <ul className="classic-bullets">
+                    <li>Beginning with a powerful action verb, write up to six responsibilities and/or accomplishments.</li>
+                    <li>Highlight your most relevant qualifications for the job by listing them first.</li>
+                    <li>Keep descriptions short but add details that show why you're a great candidate.</li>
+                  </ul>}
                   </div>
                 ))
               ) : (
@@ -70,28 +90,14 @@ export default function ResumeTemplateClassic({ data, compact = false }) {
                   <div className="classic-edu-degree">YOUR DEGREE / MAJOR</div>
                   <div className="classic-edu-school">University Name</div>
                   <div className="classic-edu-dates">2012–2014</div>
+                  <ul className="classic-bullets">
+                    <li>Beginning with a powerful action verb, write up to six responsibilities and/or accomplishments.</li>
+                    <li>Highlight your most relevant qualifications for the job by listing them first.</li>
+                    <li>Keep descriptions short but add details that show why you're a great candidate.</li>
+                  </ul>
                 </div>
               )}
             </div>
-          </section>
-
-          <section className="classic-section">
-            <h3 className="classic-section-heading">SKILLS</h3>
-            <ul className="classic-skills">
-              {(skillItems.length ? skillItems : ["Relevant Skill", "Relevant Skill", "Relevant Skill"]).map((s, idx) => (
-                <li key={idx}>{s}</li>
-              ))}
-            </ul>
-          </section>
-        </aside>
-
-        <main className="classic-right">
-          <section className="classic-section">
-            <h3 className="classic-section-heading">PROFILE</h3>
-            <p className="classic-paragraph">
-              {data?.summary ||
-                "Write a powerful performance summary here. Highlight your most valuable skills, qualifications, achievements, credentials, and the distinguishing information as it relates to and supports your career objective."}
-            </p>
           </section>
 
           <section className="classic-section">

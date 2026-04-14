@@ -14,6 +14,51 @@ export async function POST(req) {
   await connectDB();
 
   const body = await req.json();
+  const { title, personalInfo = {} } = body;
+  const requiredFields = ['fullName', 'email', 'phone', 'address'];
+  const missingFields = [];
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailRegex.test(personalInfo.email)) {
+      return new Response(
+          JSON.stringify({ message: "Invalid email format" }),
+          { status: 400 }
+      );
+  }
+  const allowedDomains = ["gmail.com", "yahoo.com", "outlook.com"];
+  const domain = personalInfo.email.split("@")[1].toLowerCase();
+
+  if (!allowedDomains.includes(domain)) {
+      return new Response(
+          JSON.stringify({ message: "Please use a valid email provider" }),
+          { status: 400 }
+      );
+  }
+
+  if (!String(title || '').trim()) {
+    missingFields.push('title');
+  }
+
+  if (!personalInfo || typeof personalInfo !== 'object') {
+    missingFields.push(...requiredFields.map((field) => `personalInfo.${field}`));
+  } else {
+    for (const field of requiredFields) {
+      if (!String(personalInfo[field] || '').trim()) {
+        missingFields.push(`personalInfo.${field}`);
+      }
+    }
+  }
+
+  if (missingFields.length) {
+    return new Response(
+      JSON.stringify({
+        message: 'Title and personal info are required',
+        missingFields,
+      }),
+      { status: 400 }
+    );
+  }
   try {
     const newResume = new Resume({
       userId: user.id,
@@ -23,6 +68,14 @@ export async function POST(req) {
     return new Response(JSON.stringify({ message: 'Resume created successfully', resume: newResume }));
   } catch (error) {
     console.error(error);
+    if (error?.name === 'ValidationError') {
+      return new Response(
+        JSON.stringify({
+          message: error.message || 'Validation failed for required resume fields',
+        }),
+        { status: 400 }
+      );
+    }
     return new Response(JSON.stringify({ message: 'Internal Server Error' }), {
       status: 500,
     });

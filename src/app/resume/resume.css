@@ -17,8 +17,8 @@
 /* ===== Classic template (screenshot-like) ===== */
 .classic-a4 {
   
-    background: white;
-    font-family: 'Times New Roman', Georgia, serif;
+    background: var(--surface-primary);
+    font-family: var(--font-family-serif);
     max-width: 1100px;
     margin: 0 auto;
     display: flex;
@@ -28,14 +28,14 @@
     width: 210mm;    /* ✅ FIX: A4 width */
   
     position: relative;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--elevation-shadow-lg);
   
 }
 
 .classic-topbar,
 .classic-bottombar {
   height: 12px;
-  background: #0f172a;
+  background: var(--color-navy-950);
 }
 
 .classic-header {
@@ -49,14 +49,14 @@
   letter-spacing: 0.28em;
   font-weight: 700;
   font-size: 34px;
-  color: #0f172a;
+  color: var(--color-navy-950);
 }
 
 .classic-title {
   margin: 10px 0 0;
   font-size: 11px;
   letter-spacing: 0.22em;
-  color: rgba(15, 23, 42, 0.7);
+  color: color-mix(in srgb, var(--color-navy-950) 70%, transparent);
   text-transform: uppercase;
 }
 
@@ -65,6 +65,7 @@
   grid-template-columns: 260px 1fr;
   gap: 26px;
   padding: 10px 44px 28px;
+  padding-top: 40px;
 
   flex: 1; /* ✅ THIS IS CRITICAL */
 }
@@ -85,7 +86,7 @@
   margin: 0 0 10px;
   font-size: 10px;
   letter-spacing: 0.28em;
-  color: rgba(15, 23, 42, 0.8);
+  color: color-mix(in srgb, var(--color-navy-950) 80%, transparent);
   text-transform: uppercase;
 }
 
@@ -103,12 +104,12 @@
   font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(15, 23, 42, 0.55);
+  color: color-mix(in srgb, var(--color-navy-950) 55%, transparent);
 }
 
 .classic-contact-value {
   font-size: 11px;
-  color: rgba(15, 23, 42, 0.85);
+  color: color-mix(in srgb, var(--color-navy-950) 85%, transparent);
   word-break: break-word;
 }
 
@@ -120,34 +121,44 @@
 .classic-edu-degree {
   font-size: 11px;
   font-weight: 700;
-  color: rgba(15, 23, 42, 0.9);
+  color: color-mix(in srgb, var(--color-navy-950) 90%, transparent);
 }
 
 .classic-edu-school {
   margin-top: 2px;
   font-size: 11px;
-  color: rgba(15, 23, 42, 0.78);
+  color: color-mix(in srgb, var(--color-navy-950) 78%, transparent);
 }
 
 .classic-edu-dates {
   margin-top: 2px;
   font-size: 10px;
-  color: rgba(15, 23, 42, 0.55);
+  color: color-mix(in srgb, var(--color-navy-950) 55%, transparent);
 }
 
-.classic-skills {
-  margin: 0;
-  padding-left: 16px;
-  display: grid;
+.classic-skills-tags {
+  display: flex;
+  flex-wrap: wrap;
   gap: 6px;
-  font-size: 11px;
-  color: rgba(15, 23, 42, 0.82);
+}
+
+.classic-skill-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border: 1px solid color-mix(in srgb, var(--color-navy-950) 22%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-navy-950) 6%, white);
+  font-size: 10px;
+  line-height: 1.2;
+  color: color-mix(in srgb, var(--color-navy-950) 85%, transparent);
+  white-space: nowrap;
 }
 
 .classic-paragraph {
   margin: 0;
   font-size: 11px;
-  color: rgba(15, 23, 42, 0.78);
+  color: color-mix(in srgb, var(--color-navy-950) 78%, transparent);
   line-height: 1.55;
 }
 
@@ -159,7 +170,7 @@
 .classic-exp-role {
   font-size: 11px;
   font-weight: 800;
-  color: rgba(15, 23, 42, 0.9);
+  color: color-mix(in srgb, var(--color-navy-950) 90%, transparent);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -170,7 +181,7 @@
   flex-wrap: wrap;
   gap: 6px;
   font-size: 10px;
-  color: rgba(15, 23, 42, 0.6);
+  color: color-mix(in srgb, var(--color-navy-950) 60%, transparent);
 }
 
 .classic-exp-sep {
@@ -183,7 +194,7 @@
   display: grid;
   gap: 6px;
   font-size: 11px;
-  color: rgba(15, 23, 42, 0.78);
+  color: color-mix(in srgb, var(--color-navy-950) 78%, transparent);
   line-height: 1.45;
 }
 
